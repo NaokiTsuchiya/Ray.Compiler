@@ -169,4 +169,24 @@ class DiCompilerTest extends TestCase
         $fakeAop = (new ScriptInjector($scriptDir))->getInstance(FakeAopInterface::class);
         $this->assertArrayHasKey('returnSame', $fakeAop->bindings); // @phpstan-ignore-line
     }
+
+    public function testUntargetedProviderCompile(): void
+    {
+        $scriptDir = __DIR__ . '/tmp';
+        $module = new FakeUntargetedWithProviderModule();
+        $compiler = new DiCompiler($module, $scriptDir);
+        $compiler->compile();
+
+        $files = [
+            'Ray_Compiler_FakeConcrete-.php',
+            'Ray_Compiler_FakeConcreteDepend-.php',
+        ];
+        foreach ($files as $file) {
+            $this->assertFileExists($scriptDir . '/' . $file);
+        }
+
+        $this->assertFileDoesNotExist(
+            $scriptDir . '/Ray\Compiler\FakeConcreteDependDepend-.php'
+        );
+    }
 }
