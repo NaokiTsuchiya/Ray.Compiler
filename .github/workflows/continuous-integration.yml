@@ -59,10 +59,6 @@ jobs:
         if: contains(matrix.dependencies, 'ignore')
         run: echo COMPOSER_FLAGS=$COMPOSER_FLAGS --ignore-platform-req=php >> $GITHUB_ENV
 
-      - name: Remove platform config to get latest dependencies for current PHP version
-        if: contains(matrix.dependencies, 'highest') || contains(matrix.dependencies, 'lowest')
-        run: composer config platform --unset
-
       - name: Allow alpha releases for latest-deps builds to catch problems earlier
         if: contains(matrix.dependencies, 'ignore')
         run: composer config minimum-stability alpha
